@@ -41,3 +41,17 @@
 
 执行 npx webpack，会将我们的脚本作为入口起点，然后 输出 为 main.js。Node 8.2+ 版本提供的 npx 命令，可以运行在初始安装的 webpack 包(package)的 webpack 二进制文件<br><br>
 在浏览器中打开 index.html，如果一切访问都正常，你应该能看到以下文本：'Hello webpack'
+
+#### commit 5 使用一个配置文件
+
+在 webpack 4 中，可以无须任何配置使用，然而大多数项目会需要很复杂的设置，这就是为什么 webpack 仍然要支持 配置文件。这比在终端(terminal)中手动输入大量命令要高效的多，所以让我们创建一个取代以上使用 CLI 选项方式的配置文件：
+
+```
+ webpack-demo
+  |- package.json
++ |- webpack.config.js
+  |- /dist
+    |- index.html
+  |- /src
+    |- index.js
+```
