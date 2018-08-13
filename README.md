@@ -60,3 +60,18 @@
 
 执行 `npx webpack --config webpack.config.js`<br><br>
 如果 webpack.config.js 存在，则 webpack 命令将默认选择使用它。我们在这里使用 --config 选项只是向你表明，可以传递任何名称的配置文件。这对于需要拆分成多个文件的复杂配置是非常有用。
+
+#### commit 7 NPM 脚本(NPM Scripts)
+
+考虑到用 CLI 这种方式来运行本地的 webpack 不是特别方便，我们可以设置一个快捷方式。在 package.json 添加一个 npm 脚本(npm script)：
+
+```
+"scripts": {
+      "test": "echo \"Error: no test specified\" && exit 1",
++     "build": "webpack"
+    },
+```
+
+现在，可以使用 npm run build 命令，来替代我们之前使用的 npx 命令<br>
+
+通过向 npm run build 命令和你的参数之间添加两个中横线，可以将自定义参数传递给 webpack，例如：npm run build -- --colors。
