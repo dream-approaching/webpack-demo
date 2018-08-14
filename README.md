@@ -80,6 +80,8 @@
 
 ### 资源管理
 
+#### 加载 css
+
 现在我们尝试整合一些其他资源，例如图像，看看 webpack 怎么处理
 
 在 webpack 出现之前，前端开发人员会使用 grunt 和 gulp 等工具来处理资源，并将它们从`/src`文件夹移动到`/dist`或`/build`目录中。同样的方式也被用于 Javascript 模块，但是，像 webpack 这样的工具，将动态打包所有的依赖项。
@@ -120,3 +122,41 @@ webpack 根据正则表达式，来确定应该查找哪些文件，并将其提
 再次在浏览器中打开 index.html，你应该看到 Hello webpack 现在的样式是红色。要查看 webpack 做了什么，请检查页面（不要查看页面源代码，因为它不会显示结果），并查看页面的 head 标签。它应该包含我们在 index.js 中导入的 style 块元素。
 
 请注意，在多数情况下，你也可以进行 [CSS 分离](https://www.webpackjs.com/plugins/extract-text-webpack-plugin/)，以便在生产环境中节省加载时间。最重要的是，现有的 loader 可以支持任何你可以想到的 CSS 处理器风格 - [postcss](https://www.webpackjs.com/loaders/postcss-loader/), [sass](https://www.webpackjs.com/loaders/sass-loader/) 和 [less](https://www.webpackjs.com/loaders/less-loader/) 等。
+
+#### 加载图片
+
+使用 file-loader，我们可以轻松地将这些内容混合到 CSS 中：
+`yarn add file-loader --dev`
+
+webpack.config.js
+
+```
+const path = require('path');
+
+  module.exports = {
+    entry: './src/index.js',
+    output: {
+      filename: 'bundle.js',
+      path: path.resolve(__dirname, 'dist')
+    },
+    module: {
+      rules: [
+        {
+          test: /\.css$/,
+          use: [
+            'style-loader',
+            'css-loader'
+          ]
+        },
++       {
++         test: /\.(png|svg|jpg|gif)$/,
++         use: [
++           'file-loader'
++         ]
++       }
+      ]
+    }
+  };
+```
+
+现在，当 import MyImage from './my-image.png'，该图像将被处理并添加到 output 目录，_并且_ MyImage 变量将包含该图像在处理后的最终 url。当使用 [css-loader](https://www.webpackjs.com/loaders/css-loader/) 时，如上所示，你的 CSS 中的 url('./my-image.png') 会使用类似的过程去处理。loader 会识别这是一个本地文件，并将 './my-image.png' 路径，替换为输出目录中图像的最终路径。[html-loader](https://www.webpackjs.com/loaders/html-loader/) 以相同的方式处理 <img src="./my-image.png" />。
