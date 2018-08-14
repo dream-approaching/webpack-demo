@@ -1,3 +1,5 @@
+### 起步
+
 #### commit 1 初始化
 
 * 初始化 npm
@@ -75,3 +77,46 @@
 现在，可以使用 npm run build 命令，来替代我们之前使用的 npx 命令<br>
 
 通过向 npm run build 命令和你的参数之间添加两个中横线，可以将自定义参数传递给 webpack，例如：npm run build -- --colors。
+
+### 资源管理
+
+现在我们尝试整合一些其他资源，例如图像，看看 webpack 怎么处理
+
+在 webpack 出现之前，前端开发人员会使用 grunt 和 gulp 等工具来处理资源，并将它们从`/src`文件夹移动到`/dist`或`/build`目录中。同样的方式也被用于 Javascript 模块，但是，像 webpack 这样的工具，将动态打包所有的依赖项。
+
+webpack 最出色的功能之一就是，除了 Javascript，还可以通过 loader 引入任何其他类型的文件。
+
+为了从 js 模块中`import`一个 css 文件，需要在[module 配置](https://www.webpackjs.com/configuration/module/)中安装并添加[style-loader](https://www.webpackjs.com/loaders/style-loader/)和[css-loader](https://www.webpackjs.com/loaders/css-loader/)
+
+webpack.config.js
+
+```
+  const path = require('path');
+
+  module.exports = {
+    entry: './src/index.js',
+    output: {
+      filename: 'bundle.js',
+      path: path.resolve(__dirname, 'dist')
+    },
++   module: {
++     rules: [
++       {
++         test: /\.css$/,
++         use: [
++           'style-loader',
++           'css-loader'
++         ]
++       }
++     ]
++   }
+  };
+```
+
+webpack 根据正则表达式，来确定应该查找哪些文件，并将其提供给指定的 loader。在这种情况下，以 .css 结尾的全部文件，都将被提供给 style-loader 和 css-loader。
+
+添加一个新的 style.css 文件，并将其导入到 index.js 中
+
+再次在浏览器中打开 index.html，你应该看到 Hello webpack 现在的样式是红色。要查看 webpack 做了什么，请检查页面（不要查看页面源代码，因为它不会显示结果），并查看页面的 head 标签。它应该包含我们在 index.js 中导入的 style 块元素。
+
+请注意，在多数情况下，你也可以进行 [CSS 分离](https://www.webpackjs.com/plugins/extract-text-webpack-plugin/)，以便在生产环境中节省加载时间。最重要的是，现有的 loader 可以支持任何你可以想到的 CSS 处理器风格 - [postcss](https://www.webpackjs.com/loaders/postcss-loader/), [sass](https://www.webpackjs.com/loaders/sass-loader/) 和 [less](https://www.webpackjs.com/loaders/less-loader/) 等。
