@@ -80,7 +80,7 @@
 
 ### 资源管理
 
-#### 加载 css
+#### commit 8 加载 css
 
 现在我们尝试整合一些其他资源，例如图像，看看 webpack 怎么处理
 
@@ -123,7 +123,7 @@ webpack 根据正则表达式，来确定应该查找哪些文件，并将其提
 
 请注意，在多数情况下，你也可以进行 [CSS 分离](https://www.webpackjs.com/plugins/extract-text-webpack-plugin/)，以便在生产环境中节省加载时间。最重要的是，现有的 loader 可以支持任何你可以想到的 CSS 处理器风格 - [postcss](https://www.webpackjs.com/loaders/postcss-loader/), [sass](https://www.webpackjs.com/loaders/sass-loader/) 和 [less](https://www.webpackjs.com/loaders/less-loader/) 等。
 
-#### 加载图片
+#### commit 9 加载图片
 
 使用 file-loader，我们可以轻松地将这些内容混合到 CSS 中：
 `yarn add file-loader --dev`
@@ -160,3 +160,46 @@ const path = require('path');
 ```
 
 现在，当 import MyImage from './my-image.png'，该图像将被处理并添加到 output 目录，_并且_ MyImage 变量将包含该图像在处理后的最终 url。当使用 [css-loader](https://www.webpackjs.com/loaders/css-loader/) 时，如上所示，你的 CSS 中的 url('./my-image.png') 会使用类似的过程去处理。loader 会识别这是一个本地文件，并将 './my-image.png' 路径，替换为输出目录中图像的最终路径。[html-loader](https://www.webpackjs.com/loaders/html-loader/) 以相同的方式处理 <img src="./my-image.png" />。
+
+#### commit 10 加载字体
+
+file-loader 和 url-loader 可以接收并加载任何文件，然后将其输出到构建目录。
+
+这就是说，我们可以将它们用于任何类型的文件，包括字体。
+
+`更新 webpack.config.js 来处理字体文件`
+
+```
+const path = require('path');
+
+  module.exports = {
+    entry: './src/index.js',
+    output: {
+      filename: 'bundle.js',
+      path: path.resolve(__dirname, 'dist')
+    },
+    module: {
+      rules: [
+        {
+          test: /\.css$/,
+          use: [
+            'style-loader',
+            'css-loader'
+          ]
+        },
+        {
+          test: /\.(png|svg|jpg|gif)$/,
+          use: [
+            'file-loader'
+          ]
+        },
++       {
++         test: /\.(woff|woff2|eot|ttf|otf)$/,
++         use: [
++           'file-loader'
++         ]
++       }
+      ]
+    }
+  };
+```
